@@ -20,7 +20,31 @@
         "baseUrl": "./",
         "paths": {
             "@/*": [
-                "src/*"
+                "src/app/*"
+            ],
+            "@routes": [
+                "./src/my-routes"
+            ],
+            "@errorRoutes": [
+                "./src/app/layout/errors/*"
+            ],
+            "@assets/*": [
+                "./src/assets/*"
+            ],
+            "@env/*": [
+                "./src/environments/*"
+            ],
+            "@layout/*": [
+                "./src/app/layout/*"
+            ],
+            "@modules/*": [
+                "./src/app/pages/*"
+            ],
+            "@utils/*": [
+                "./src/app/utils/*"
+            ],
+            "@adminModule": [
+                "./src/app/pages/admin"
             ]
         }
     },
