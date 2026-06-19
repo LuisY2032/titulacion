@@ -1,9 +1,8 @@
-import {Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
-import {FormRegistryService} from "@/pages/admin/services/form-registry.service";
-import {email, FieldTree, form, required, SchemaPathTree} from "@angular/forms/signals";
-import {CareerCreateStore} from "@/pages/admin/work-flows/user-registration/user-registration.store";
-import {INITIAL_STATE, StateCareer} from "@/pages/admin/work-flows/user-registration/user-registration.state";
-import {PrincipalDataComponent, SecondaryDataComponent, StateCareerComponent} from "@/pages/admin";
+import {Component} from '@angular/core';
+import {StateCareerComponent} from "@/pages/admin/components/state-career/state-career.component";
+import {PrincipalDataComponent} from "@/pages/admin/components/principla-data/principal-data.component";
+import {SecondaryDataComponent} from "@/pages/admin/components/secondary-data/secondary-data.component";
+
 
 @Component({
     selector: 'app-career',
@@ -14,46 +13,6 @@ import {PrincipalDataComponent, SecondaryDataComponent, StateCareerComponent} fr
     ],
     templateUrl: './career.component.html'
 })
-export class CareerComponent implements OnInit, OnDestroy {
-    private readonly formRegistryService = inject(FormRegistryService);
-    private readonly careerCreateStore = inject(CareerCreateStore);
+export class CareerComponent  {
 
-    protected readonly form$ = signal<StateCareer>(INITIAL_STATE.stateCareer);
-
-    protected readonly careerCreateForm: FieldTree<StateCareer> = this.buildForm;
-
-    constructor() {
-
-    }
-
-    ngOnInit(): void {
-        this.formRegistryService.register(
-            'careerCreateForm',
-            this.careerCreateForm,
-            this.form$()
-        );
-    }
-
-    ngOnDestroy(): void {
-        this.formRegistryService.unregister('careerCreateForm');
-    }
-
-    get buildForm() {
-        return form(this.form$, (schema) => {
-            this.validateForm(schema)
-        });
-    }
-
-    private validateForm(schema: SchemaPathTree<StateCareer>): void {
-        //modality
-        required(schema.modality, {message: 'El name es requerido'});
-        email(schema.modality, {message: 'Ingresa un name válido'});
-
-        //isVisible
-        required(schema.isVisible, {message: 'El email debe tener al menos 2 caracteres'});
-    }
-
-    async save() {
-        console.log(await this.formRegistryService.getFormErrors());
-    }
 }
