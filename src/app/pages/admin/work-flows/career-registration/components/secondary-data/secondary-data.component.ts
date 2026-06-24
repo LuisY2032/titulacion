@@ -1,6 +1,6 @@
 import {Component, computed, effect, inject, OnDestroy, OnInit, signal, WritableSignal} from '@angular/core';
 
-import {FieldTree, form, FormField, SchemaPathTree, validate} from "@angular/forms/signals";
+import {FieldTree, form, FormField, required, SchemaPathTree, validate} from "@angular/forms/signals";
 import {SecondaryData} from "../../career-registration.state";
 import {InputText} from "primeng/inputtext";
 import {LabelDirective} from "@utils/directives/label.directive";
@@ -24,8 +24,8 @@ export class SecondaryDataComponent implements OnInit, OnDestroy {
     private readonly formRegistryService = inject(FormRegistryService);
     private readonly careerCreateStore = inject(CareerRegistrationStore);
 
-    protected readonly isCodeRequired = computed(() =>
-        this.careerCreateStore.principalData().code !== '1'
+    protected readonly isShortNameRequired = computed(() =>
+        this.codeField().value() === '1'
     );
 
     protected readonly form$: WritableSignal<SecondaryData> = signal(this.careerCreateStore.secondaryData());
@@ -58,40 +58,55 @@ export class SecondaryDataComponent implements OnInit, OnDestroy {
     }
 
     private validateForm(schema: SchemaPathTree<SecondaryData>): void {
-        this.codeRules(schema);
+        // this.codeRules(schema);
         this.shortNameRules(schema);
+        required(schema.code, {message: 'El code es requerido'});
     }
 
-    private codeRules(schema: SchemaPathTree<SecondaryData>) {
-        return validate(schema.code, (ctx) => {
-            if (!this.isCodeRequired()) return null;
+    // private codeRules(schema: SchemaPathTree<SecondaryData>) {
+    //     return validate(schema.code, (ctx) => {
+    //         if (!this.isCodeRequired()) return null;
+    //
+    //         if (!ctx.value()) {
+    //             return {
+    //                 kind: 'required',
+    //                 message: 'Código requerido'
+    //             };
+    //         }
+    //
+    //         return null;
+    //     });
+    // }
 
+    // private shortNameRules(schema: SchemaPathTree<SecondaryData>) {
+    //     return validate(schema.shortName, (ctx) => {
+    //
+    //         const code = this.codeField().value();
+    //
+    //         if (code !== '10') return null;
+    //
+    //
+    //         const value = ctx.value() ?? '';
+    //
+    //         if (value.length < 2) {
+    //             return {
+    //                 kind: 'minLength',
+    //                 message: 'Debe tener al menos 2 caracteres'
+    //             };
+    //         }
+    //
+    //         return null;
+    //     });
+    // }
+
+    private shortNameRules(schema: SchemaPathTree<SecondaryData>) {
+        return validate(schema.shortName, (ctx) => {
+            if (!this.isShortNameRequired()) return null;
 
             if (!ctx.value()) {
                 return {
                     kind: 'required',
-                    message: 'Código requerido'
-                };
-            }
-
-            return null;
-        });
-    }
-
-    private shortNameRules(schema: SchemaPathTree<SecondaryData>) {
-        return validate(schema.shortName, (ctx) => {
-
-            const code = this.codeField().value();
-
-            if (code !== '10') return null;
-
-
-            const value = ctx.value() ?? '';
-
-            if (value.length < 2) {
-                return {
-                    kind: 'minLength',
-                    message: 'Debe tener al menos 2 caracteres'
+                    message: 'Shortname es requerido'
                 };
             }
 

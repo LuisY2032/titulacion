@@ -25,7 +25,6 @@ import {FontAwesome} from "@utils/icons/font-awesome";
     templateUrl: './career.component.html'
 })
 export class CareerComponent {
-
     private readonly formRegistryService = inject(FormRegistryService);
     private readonly customMessageService = inject(CustomMessageService);
     protected readonly careerCreateStore = inject(CareerRegistrationStore);
@@ -39,13 +38,14 @@ export class CareerComponent {
 
         const payload = {
             principalData: this.careerCreateStore.principalData(),
-            secondaryData: this.careerCreateStore.secondaryData()
+            secondaryData: this.careerCreateStore.secondaryData(),
         }
 
         console.log(payload);
 
         this.careerRegistrationService.register(payload).subscribe({
-            next: (response) => {}
+            next: (response) => {
+            }
         });
     }
 

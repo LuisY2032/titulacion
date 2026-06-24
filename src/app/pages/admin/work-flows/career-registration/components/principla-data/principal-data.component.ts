@@ -56,10 +56,9 @@ export class PrincipalDataComponent implements OnInit, OnDestroy {
     private validateForm(schema: SchemaPathTree<PrincipalData>): void {
         //modality
         required(schema.name, {message: 'El name es requerido'});
-        email(schema.acronym, {message: 'Ingresa un name válido'});
 
         //isVisible
-        required(schema.code, {message: 'El email debe tener al menos 2 caracteres'});
+        required(schema.code, {message: 'El code es requerido'});
     }
 
     get codeField() {
