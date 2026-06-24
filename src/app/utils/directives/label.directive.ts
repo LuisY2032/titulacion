@@ -1,64 +1,86 @@
-import { AfterViewInit, Directive, ElementRef, HostBinding, inject, Input, OnChanges, Renderer2, SimpleChanges } from '@angular/core';
-import { AbstractControl, Validators } from '@angular/forms';
+import {
+    AfterViewInit,
+    computed,
+    Directive,
+    effect,
+    ElementRef,
+    HostBinding,
+    inject,
+    Input,
+    OnChanges,
+    Renderer2,
+    signal,
+    SimpleChanges,
+    afterNextRender,
+} from '@angular/core';
+import {FieldState} from '@angular/forms/signals';
+
+type SignalField = () => FieldState<unknown>;
 
 @Directive({
-    selector: '[appLabel]'
+    selector: '[appLabel]',
 })
-export class LabelDirective implements AfterViewInit, OnChanges {
+export class LabelDirective implements OnChanges {
     @HostBinding('style.display') display = 'block';
     @HostBinding('style.width') width = '100%';
     @HostBinding('style.whiteSpace') whiteSpace = 'normal';
-    /** Si se establece, este HTML reemplaza el contenido del <label>. */
+
     @Input() label: string | null = null;
-    /** Si true, añade ":" al final cuando se usa `label`. */
     @Input() appendColon = false;
-    private el = inject(ElementRef<HTMLElement>);
-    private renderer = inject(Renderer2);
-    private _viewInit = false;
 
-    private _required = false;
-
-    @Input()
-    set required(control: AbstractControl | null) {
-        this._required = !!control && (control.hasValidator(Validators.required) || control.hasValidator(Validators.requiredTrue));
-        if (this._viewInit) this.updateRequiredIcon();
+    @Input() set field(f: SignalField | null) {
+        this._field.set(f);
     }
 
-    ngAfterViewInit(): void {
-        this._viewInit = true;
+    private readonly el = inject(ElementRef<HTMLElement>);
+    private readonly renderer = inject(Renderer2);
 
-        // Si viene [label], reemplaza el contenido; si no, conserva lo proyectado.
-        if (this.label != null && this.label !== '') {
-            const html = this.appendColon ? `${this.label}:` : this.label;
-            this.setInnerHTML(html);
-        }
+    private readonly _field = signal<SignalField | null>(null);
+    private readonly _viewReady = signal(false); // signal en lugar de boolean
 
-        this.updateRequiredIcon();
+    private readonly _required = computed(() => {
+        const f = this._field();
+        if (!f) return false;
+        const state = f() as any;
+        const errors = state?.validationState?.errors?.() ?? [];
+        return errors.some(
+            (e: any) => e.kind === 'required' || e.message?.toLowerCase().includes('required')
+        );
+    });
+    constructor() {
+        // Marca el view como listo después del primer render
+        afterNextRender(() => {
+            this._viewReady.set(true);
+            if (this.label != null && this.label !== '') {
+                this.setInnerHTML(this.appendColon ? `${this.label}:` : this.label);
+            }
+        });
+
+        // El effect lee _viewReady() y _required() — se re-ejecuta cuando cualquiera cambia
+        effect(() => {
+            if (!this._viewReady()) return; // espera al render
+            this.updateRequiredIcon();
+        });
     }
 
     ngOnChanges(changes: SimpleChanges): void {
-        if (!this._viewInit) return;
-
+        if (!this._viewReady()) return;
         if ('label' in changes || 'appendColon' in changes) {
             if (this.label != null && this.label !== '') {
-                const html = this.appendColon ? `${this.label}:` : this.label;
-                this.setInnerHTML(html);
-                this.updateRequiredIcon(); // reinsertar ícono si hace falta
+                this.setInnerHTML(this.appendColon ? `${this.label}:` : this.label);
+                this.updateRequiredIcon();
             }
-            // Si label pasa a vacío, no tocamos el contenido proyectado actual.
         }
     }
 
-    private setInnerHTML(html: string) {
-        // Reemplaza el HTML del label (controlado por el dev).
+    private setInnerHTML(html: string): void {
         this.renderer.setProperty(this.el.nativeElement, 'innerHTML', html + ':');
     }
 
     private updateRequiredIcon(): void {
         const host = this.el.nativeElement;
         const existing = host.querySelector('[data-app-label-icon="true"]');
-
-        if (this._required) {
+        if (this._required()) {
             if (!existing) {
                 const icon = this.renderer.createElement('i');
                 this.renderer.setAttribute(icon, 'data-app-label-icon', 'true');
@@ -68,13 +90,8 @@ export class LabelDirective implements AfterViewInit, OnChanges {
                 this.renderer.addClass(icon, 'mr-1');
                 this.renderer.setStyle(icon, 'font-size', '0.6rem');
                 this.renderer.setAttribute(icon, 'aria-hidden', 'true');
-
-                const first = host.firstChild;
-                // Insertar al inicio SIN romper las interpolaciones del contenido existente
-                this.renderer.insertBefore(host, icon, first);
+                this.renderer.insertBefore(host, icon, host.firstChild);
             }
-        } else if (existing) {
-            this.renderer.removeChild(host, existing);
         }
     }
 }

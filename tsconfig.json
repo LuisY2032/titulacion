@@ -19,9 +19,6 @@
         "module": "ES2022",
         "baseUrl": "./",
         "paths": {
-            "@/*": [
-                "src/app/*"
-            ],
             "@routes": [
                 "./src/my-routes"
             ],
