@@ -222,6 +222,10 @@ export const MY_ROUTES = {
             profile: {
                 base: 'users/profile',
                 absolute: '/main/admin/users/profile'
+            },
+            teacher: {
+                base: 'users/teacher',
+                absolute: '/main/admin/users/teacher'
             }
         }
     },

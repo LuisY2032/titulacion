@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { MY_ROUTES } from '@routes';
 
 @Component({
     selector: 'app-menu',
@@ -40,6 +41,7 @@ export class AppMenu {
                     { label: 'Overlay', icon: 'pi pi-fw pi-clone', routerLink: ['/uikit/overlay'] },
                     { label: 'Media', icon: 'pi pi-fw pi-image', routerLink: ['/uikit/media'] },
                     { label: 'Menu', icon: 'pi pi-fw pi-bars', routerLink: ['/uikit/menu'] },
+                    {label: 'Teacher', icon: 'pi pi-fw pi-graduation-cap', routerLink: ['/main/admin/teacher'] },
                     { label: 'Message', icon: 'pi pi-fw pi-comment', routerLink: ['/uikit/message'] },
                     { label: 'File', icon: 'pi pi-fw pi-file', routerLink: ['/uikit/file'] },
                     { label: 'Chart', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts'] },
@@ -76,6 +78,11 @@ export class AppMenu {
                                 label: 'Access Denied',
                                 icon: 'pi pi-fw pi-lock',
                                 routerLink: ['/auth/access']
+                            },
+                            {
+                                label: 'Teacher',
+                                icon: 'pi pi-fw pi-graduation-cap',
+                                routerLink: [MY_ROUTES.adminPages.user.teacher.absolute]
                             }
                         ]
                     },
