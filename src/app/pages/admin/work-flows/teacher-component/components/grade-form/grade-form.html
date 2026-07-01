@@ -3,14 +3,14 @@
         <div class="student-header">
             <i class="pi pi-user user-icon"></i>
             <div class="student-details">
-                <span class="student-id">{{ enrollmentDetail?.enrollment?.student?.user?.identification || '1234567890' }}</span>
-                <h2 class="student-name">{{ enrollmentDetail?.enrollment?.student?.user?.lastname || 'Apellido' }} {{ enrollmentDetail?.enrollment?.student?.user?.name || 'Estudiante' }}</h2>
+                <span class="student-id">{{ enrollmentDetail()?.enrollment?.student?.user?.identification || '1234567890' }}</span>
+                <h2 class="student-name">{{ enrollmentDetail()?.enrollment?.student?.user?.lastname || 'Apellido' }} {{ enrollmentDetail()?.enrollment?.student?.user?.name || 'Estudiante' }}</h2>
             </div>
         </div>
 
         <div class="subject-info">
-            <p class="subject-code">{{ enrollmentDetail?.subject?.code || 'COD-01' }} - {{ enrollmentDetail?.subject?.name || 'Materia de Prueba' }}</p>
-            <p class="period-details">{{ enrollmentDetail?.subject?.academicPeriod?.name || 'Periodo Académico' }} • {{ enrollmentDetail?.workday?.name || 'Matutina' }} • {{ enrollmentDetail?.parallel?.name || 'Paralelo A' }}</p>
+            <p class="subject-code">{{ enrollmentDetail()?.subject?.code || 'COD-01' }} - {{ enrollmentDetail()?.subject?.name || 'Materia de Prueba' }}</p>
+            <p class="period-details">{{ enrollmentDetail()?.subject?.academicPeriod?.name || 'Periodo Académico' }} • {{ enrollmentDetail()?.workday?.name || 'Matutina' }} • {{ enrollmentDetail()?.parallel?.name || 'Paralelo A' }}</p>
         </div>
     </div>
 
