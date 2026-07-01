@@ -1,1 +1,57 @@
-nariyanke works!
+<form (ngSubmit)="onSubmit()" class="grades-form-container">
+    <div class="custom-card student-info-card">
+        <div class="student-header">
+            <i class="pi pi-user user-icon"></i>
+            <div class="student-details">
+                <span class="student-id">{{ enrollmentDetail?.enrollment?.student?.user?.identification || '1234567890' }}</span>
+                <h2 class="student-name">{{ enrollmentDetail?.enrollment?.student?.user?.lastname || 'Apellido' }} {{ enrollmentDetail?.enrollment?.student?.user?.name || 'Estudiante' }}</h2>
+            </div>
+        </div>
+
+        <div class="subject-info">
+            <p class="subject-code">{{ enrollmentDetail?.subject?.code || 'COD-01' }} - {{ enrollmentDetail?.subject?.name || 'Materia de Prueba' }}</p>
+            <p class="period-details">{{ enrollmentDetail?.subject?.academicPeriod?.name || 'Periodo Académico' }} • {{ enrollmentDetail?.workday?.name || 'Matutina' }} • {{ enrollmentDetail?.parallel?.name || 'Paralelo A' }}</p>
+        </div>
+    </div>
+
+    <div class="custom-card grades-card">
+        <div class="card-header">
+            <h3>Registro de Calificaciones</h3>
+        </div>
+
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-field-group">
+                    <label for="grade1">Parcial 1 <span class="required-star">*</span></label>
+                    <div class="custom-input-group">
+                        <p-inputNumber id="grade1" [formControl]="grade1Field" mode="decimal" [showButtons]="true" [min]="0" [max]="5" [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="0.00"></p-inputNumber>
+                        <span class="input-suffix">/ 5.00</span>
+                    </div>
+                    <small *ngIf="grade1Field.invalid && grade1Field.touched" class="error-text"> Rango: 0.00 - 5.00 </small>
+                </div>
+
+                <div class="form-field-group">
+                    <label for="grade2">Parcial 2 <span class="required-star">*</span></label>
+                    <div class="custom-input-group">
+                        <p-inputNumber id="grade2" [formControl]="grade2Field" mode="decimal" [showButtons]="true" [min]="0" [max]="5" [minFractionDigits]="2" [maxFractionDigits]="2" placeholder="0.00"></p-inputNumber>
+                        <span class="input-suffix">/ 5.00</span>
+                    </div>
+                    <small *ngIf="grade2Field.invalid && grade2Field.touched" class="error-text"> Rango: 0.00 - 5.00 </small>
+                </div>
+
+                <div class="form-field-group">
+                    <label for="attendance">Asistencia <span class="required-star">*</span></label>
+                    <div class="custom-input-group attendance-group">
+                        <p-inputNumber id="attendance" [formControl]="attendanceField" mode="decimal" [showButtons]="true" [min]="0" [max]="100" [step]="10" placeholder="100"></p-inputNumber>
+                        <span class="input-suffix percent-addon">%</span>
+                    </div>
+                    <small *ngIf="attendanceField.invalid && attendanceField.touched" class="error-text"> Rango: 0 - 100 </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <p-button type="submit" label="Guardar" icon="pi pi-check" class="save-btn"></p-button>
+        </div>
+    </div>
+</form>
